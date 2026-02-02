@@ -1,20 +1,27 @@
 #!/bin/bash
-set -e
+set -u
 
-echo "🐳 Setting up Container Fundamentals environment..."
+echo "Setting up Container Fundamentals environment..."
 
-# Verify Docker is working
-echo "Verifying Docker installation..."
-docker --version
-docker compose version
+echo "Verifying Docker..."
+docker_ready=0
+for _ in $(seq 1 60); do
+  if docker info >/dev/null 2>&1; then
+    docker_ready=1
+    break
+  fi
+  sleep 1
+done
 
-# Pull commonly used images to save time during labs
-echo "Pre-pulling common images (this may take a minute)..."
-docker pull python:3.11-slim &
-docker pull python:3.11-alpine &
-docker pull nginx:alpine &
-docker pull busybox:latest &
-wait
+if [ "$docker_ready" -eq 1 ]; then
+  docker --version || true
+  docker compose version || true
+
+  echo "Skipping image pre-pull."
+else
+  echo "Warning: Docker daemon did not become ready in time; skipping pre-pull."
+  echo "If needed later, run: docker run hello-world"
+fi
 
 echo "Verifying Python..."
 python3 --version
