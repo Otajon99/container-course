@@ -39,6 +39,12 @@ sudo install -m 755 ./kind /usr/local/bin/kind
 rm ./kind
 kind version
 
+echo "Installing cloudflared..."
+curl -fsSLo ./cloudflared https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
+sudo install -m 755 ./cloudflared /usr/local/bin/cloudflared
+rm ./cloudflared
+cloudflared version
+
 # --- Week 05: Secret management tools ---
 
 echo "Installing SOPS..."
@@ -75,6 +81,7 @@ echo "  sops:     $(sops --version 2>/dev/null)"
 echo "  age:      $(age --version 2>/dev/null)"
 echo "  kubeseal: $(kubeseal --version 2>/dev/null)"
 echo "  vault:    $(vault version 2>/dev/null)"
+echo "  cloudflared: $(cloudflared version 2>/dev/null | head -1)"
 echo ""
 echo "Quick verification:"
 echo "  docker run hello-world"
